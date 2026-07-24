@@ -1,0 +1,27 @@
+Limit  (cost=174055.66..174058.05 rows=20 width=20) (actual time=1033.082..1048.838 rows=20 loops=1)
+  Buffers: shared hit=50782 read=75026
+  I/O Timings: shared read=2499.122
+  ->  Gather Merge  (cost=174055.66..181210.04 rows=59752 width=20) (actual time=1033.079..1048.831 rows=20 loops=1)
+        Workers Planned: 4
+        Workers Launched: 4
+        Buffers: shared hit=50782 read=75026
+        I/O Timings: shared read=2499.122
+        ->  Sort  (cost=173055.60..173092.94 rows=14938 width=20) (actual time=975.160..975.163 rows=17 loops=5)
+              Sort Key: ts DESC
+              Sort Method: top-N heapsort  Memory: 27kB
+              Buffers: shared hit=50782 read=75026
+              I/O Timings: shared read=2499.122
+              Worker 0:  Sort Method: top-N heapsort  Memory: 27kB
+              Worker 1:  Sort Method: top-N heapsort  Memory: 27kB
+              Worker 2:  Sort Method: top-N heapsort  Memory: 27kB
+              Worker 3:  Sort Method: top-N heapsort  Memory: 27kB
+              ->  Parallel Seq Scan on trades  (cost=0.00..172658.10 rows=14938 width=20) (actual time=0.066..967.883 rows=10222 loops=5)
+                    Filter: (symbol = 'DDOG'::text)
+                    Rows Removed by Filter: 3002961
+                    Buffers: shared hit=50558 read=75026
+                    I/O Timings: shared read=2499.122
+Settings: effective_cache_size = '8GB', work_mem = '128MB', random_page_cost = '1.1', max_parallel_workers_per_gather = '4', jit = 'off'
+Planning:
+  Buffers: shared hit=3
+Planning Time: 0.162 ms
+Execution Time: 1048.877 ms

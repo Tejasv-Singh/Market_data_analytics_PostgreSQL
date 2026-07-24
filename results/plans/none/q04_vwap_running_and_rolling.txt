@@ -1,0 +1,28 @@
+WindowAgg  (cost=195882.95..227089.90 rows=176077 width=90) (actual time=647.090..1570.045 rows=187369 loops=1)
+  Buffers: shared hit=50174 read=75666
+  I/O Timings: shared read=1240.211
+  ->  WindowAgg  (cost=195882.95..221367.39 rows=176077 width=66) (actual time=646.637..949.616 rows=187369 loops=1)
+        Buffers: shared hit=50174 read=75666
+        I/O Timings: shared read=1240.211
+        ->  Gather Merge  (cost=195882.95..216965.47 rows=176077 width=26) (actual time=646.592..704.577 rows=187369 loops=1)
+              Workers Planned: 4
+              Workers Launched: 4
+              Buffers: shared hit=50174 read=75666
+              I/O Timings: shared read=1240.211
+              ->  Sort  (cost=194882.89..194992.94 rows=44019 width=26) (actual time=622.224..625.634 rows=37474 loops=5)
+                    Sort Key: ts, match_id
+                    Sort Method: quicksort  Memory: 6988kB
+                    Buffers: shared hit=50174 read=75666
+                    I/O Timings: shared read=1240.211
+                    Worker 0:  Sort Method: quicksort  Memory: 3490kB
+                    Worker 1:  Sort Method: quicksort  Memory: 1805kB
+                    Worker 2:  Sort Method: quicksort  Memory: 2248kB
+                    Worker 3:  Sort Method: quicksort  Memory: 3399kB
+                    ->  Parallel Seq Scan on trades  (cost=0.00..191487.74 rows=44019 width=26) (actual time=0.024..613.277 rows=37474 loops=5)
+                          Filter: ((ts >= '2026-03-04 00:00:00'::timestamp without time zone) AND (ts < '2026-03-05 00:00:00'::timestamp without time zone) AND (symbol = 'MSFT'::text))
+                          Rows Removed by Filter: 2975710
+                          Buffers: shared hit=49918 read=75666
+                          I/O Timings: shared read=1240.211
+Settings: effective_cache_size = '8GB', work_mem = '128MB', random_page_cost = '1.1', max_parallel_workers_per_gather = '4', jit = 'off'
+Planning Time: 0.077 ms
+Execution Time: 1590.772 ms

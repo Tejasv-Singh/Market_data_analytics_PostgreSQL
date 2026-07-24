@@ -1,0 +1,29 @@
+GroupAggregate  (cost=218929.52..486145.17 rows=10000 width=156) (actual time=2677.479..5224.107 rows=3900 loops=1)
+  Group Key: trades.symbol, (date_bin('00:05:00'::interval, trades.ts, '2026-03-04 00:00:00'::timestamp without time zone))
+  Buffers: shared hit=52785 read=73042
+  I/O Timings: shared read=2063.730
+  ->  WindowAgg  (cost=218929.52..440831.27 rows=1507130 width=102) (actual time=2655.342..4450.515 rows=1487823 loops=1)
+        Buffers: shared hit=52785 read=73042
+        I/O Timings: shared read=2063.730
+        ->  Gather Merge  (cost=218929.52..399385.19 rows=1507130 width=38) (actual time=2647.493..3203.807 rows=1487823 loops=1)
+              Workers Planned: 4
+              Workers Launched: 4
+              Buffers: shared hit=52785 read=73042
+              I/O Timings: shared read=2063.730
+              ->  Sort  (cost=217929.47..218871.42 rows=376782 width=38) (actual time=1772.819..1822.708 rows=297565 loops=5)
+                    Sort Key: trades.symbol, (date_bin('00:05:00'::interval, trades.ts, '2026-03-04 00:00:00'::timestamp without time zone)), trades.ts, trades.match_id
+                    Sort Method: quicksort  Memory: 46924kB
+                    Buffers: shared hit=52785 read=73042
+                    I/O Timings: shared read=2063.730
+                    Worker 0:  Sort Method: quicksort  Memory: 35402kB
+                    Worker 1:  Sort Method: quicksort  Memory: 35417kB
+                    Worker 2:  Sort Method: quicksort  Memory: 5536kB
+                    Worker 3:  Sort Method: quicksort  Memory: 32024kB
+                    ->  Parallel Seq Scan on trades  (cost=0.00..183033.10 rows=376782 width=38) (actual time=116.814..668.505 rows=297565 loops=5)
+                          Filter: ((ts >= '2026-03-04 00:00:00'::timestamp without time zone) AND (ts < '2026-03-05 00:00:00'::timestamp without time zone))
+                          Rows Removed by Filter: 2715619
+                          Buffers: shared hit=52542 read=73042
+                          I/O Timings: shared read=2063.730
+Settings: effective_cache_size = '8GB', work_mem = '128MB', random_page_cost = '1.1', max_parallel_workers_per_gather = '4', jit = 'off'
+Planning Time: 0.107 ms
+Execution Time: 5229.520 ms

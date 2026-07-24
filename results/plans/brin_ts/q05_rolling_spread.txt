@@ -1,0 +1,31 @@
+WindowAgg  (cost=366557.63..456334.58 rows=479489 width=104) (actual time=320.705..5238.938 rows=584377 loops=1)
+  Buffers: shared hit=33450
+  ->  WindowAgg  (cost=366557.63..437155.02 rows=479489 width=52) (actual time=320.686..2726.312 rows=584377 loops=1)
+        Buffers: shared hit=33450
+        ->  Gather Merge  (cost=366557.63..423969.07 rows=479489 width=20) (actual time=320.642..509.030 rows=584377 loops=1)
+              Workers Planned: 4
+              Workers Launched: 4
+              Buffers: shared hit=33450
+              ->  Sort  (cost=365557.57..365857.25 rows=119872 width=20) (actual time=249.907..260.711 rows=116875 loops=5)
+                    Sort Key: quotes.ts
+                    Sort Method: quicksort  Memory: 13866kB
+                    Buffers: shared hit=33450
+                    Worker 0:  Sort Method: quicksort  Memory: 7734kB
+                    Worker 1:  Sort Method: quicksort  Memory: 7779kB
+                    Worker 2:  Sort Method: quicksort  Memory: 8092kB
+                    Worker 3:  Sort Method: quicksort  Memory: 8357kB
+                    ->  Parallel Bitmap Heap Scan on quotes  (cost=142.52..355445.69 rows=119872 width=20) (actual time=0.829..219.163 rows=116875 loops=5)
+                          Recheck Cond: ((ts >= '2026-03-04 00:00:00'::timestamp without time zone) AND (ts < '2026-03-05 00:00:00'::timestamp without time zone))
+                          Rows Removed by Index Recheck: 3143
+                          Filter: (symbol = 'MSFT'::text)
+                          Rows Removed by Filter: 681774
+                          Heap Blocks: lossy=9454
+                          Buffers: shared hit=33422
+                          ->  Bitmap Index Scan on quotes_ts_brin  (cost=0.00..22.65 rows=4053752 width=0) (actual time=2.320..2.320 rows=334080 loops=1)
+                                Index Cond: ((ts >= '2026-03-04 00:00:00'::timestamp without time zone) AND (ts < '2026-03-05 00:00:00'::timestamp without time zone))
+                                Buffers: shared hit=14
+Settings: effective_cache_size = '8GB', work_mem = '128MB', random_page_cost = '1.1', max_parallel_workers_per_gather = '4', jit = 'off'
+Planning:
+  Buffers: shared hit=22
+Planning Time: 33.798 ms
+Execution Time: 5290.791 ms

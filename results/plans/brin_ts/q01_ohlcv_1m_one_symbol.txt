@@ -1,0 +1,32 @@
+GroupAggregate  (cost=135808.55..163711.01 rows=200 width=152) (actual time=157.640..435.569 rows=390 loops=1)
+  Group Key: (date_bin('00:01:00'::interval, trades.ts, '2026-03-04 00:00:00'::timestamp without time zone))
+  Buffers: shared hit=12628
+  ->  WindowAgg  (cost=135808.55..159254.26 rows=161991 width=98) (actual time=154.215..350.038 rows=187369 loops=1)
+        Buffers: shared hit=12628
+        ->  Gather Merge  (cost=135808.55..155204.48 rows=161991 width=34) (actual time=152.814..204.377 rows=187369 loops=1)
+              Workers Planned: 4
+              Workers Launched: 4
+              Buffers: shared hit=12628
+              ->  Sort  (cost=134808.49..134909.73 rows=40498 width=34) (actual time=94.065..97.171 rows=37474 loops=5)
+                    Sort Key: (date_bin('00:01:00'::interval, trades.ts, '2026-03-04 00:00:00'::timestamp without time zone)), trades.ts, trades.match_id
+                    Sort Method: quicksort  Memory: 7365kB
+                    Buffers: shared hit=12628
+                    Worker 0:  Sort Method: quicksort  Memory: 3666kB
+                    Worker 1:  Sort Method: quicksort  Memory: 2436kB
+                    Worker 2:  Sort Method: quicksort  Memory: 2491kB
+                    Worker 3:  Sort Method: quicksort  Memory: 2667kB
+                    ->  Parallel Bitmap Heap Scan on trades  (cost=49.95..131709.27 rows=40498 width=34) (actual time=0.397..80.119 rows=37474 loops=5)
+                          Recheck Cond: ((ts >= '2026-03-04 00:00:00'::timestamp without time zone) AND (ts < '2026-03-05 00:00:00'::timestamp without time zone))
+                          Rows Removed by Index Recheck: 3491
+                          Filter: (symbol = 'MSFT'::text)
+                          Rows Removed by Filter: 260091
+                          Heap Blocks: lossy=4609
+                          Buffers: shared hit=12568
+                          ->  Bitmap Index Scan on trades_ts_brin  (cost=0.00..9.45 rows=1365503 width=0) (actual time=0.700..0.700 rows=125600 loops=1)
+                                Index Cond: ((ts >= '2026-03-04 00:00:00'::timestamp without time zone) AND (ts < '2026-03-05 00:00:00'::timestamp without time zone))
+                                Buffers: shared hit=8
+Settings: effective_cache_size = '8GB', work_mem = '128MB', random_page_cost = '1.1', max_parallel_workers_per_gather = '4', jit = 'off'
+Planning:
+  Buffers: shared hit=28
+Planning Time: 3.642 ms
+Execution Time: 436.948 ms

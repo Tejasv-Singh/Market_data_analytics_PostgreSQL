@@ -1,0 +1,47 @@
+{
+  "btree_ts|MSFT": {
+    "exec_ms": 184.042,
+    "timeout": false,
+    "shared_hit": 77900,
+    "shared_read": 0,
+    "rows_out": 15055,
+    "scans": [
+      "Index Scan [trades_ts_btree]",
+      "Index Scan [quotes_ts_btree]"
+    ]
+  },
+  "btree_ts|DDOG": {
+    "exec_ms": 55.981,
+    "timeout": false,
+    "shared_hit": 5252,
+    "shared_read": 0,
+    "rows_out": 459,
+    "scans": [
+      "Index Scan [trades_ts_btree]",
+      "Index Scan [quotes_ts_btree]"
+    ]
+  },
+  "btree_sym_ts|MSFT": {
+    "exec_ms": 310.748,
+    "timeout": false,
+    "shared_hit": 76342,
+    "shared_read": 0,
+    "rows_out": 15055,
+    "scans": [
+      "Bitmap Heap Scan [trades]",
+      "Bitmap Index Scan [trades_sym_ts]",
+      "Index Scan [quotes_sym_ts]"
+    ]
+  },
+  "btree_sym_ts|DDOG": {
+    "exec_ms": 10.518,
+    "timeout": false,
+    "shared_hit": 2667,
+    "shared_read": 0,
+    "rows_out": 459,
+    "scans": [
+      "Index Scan [trades_sym_ts]",
+      "Index Scan [quotes_sym_ts]"
+    ]
+  }
+}

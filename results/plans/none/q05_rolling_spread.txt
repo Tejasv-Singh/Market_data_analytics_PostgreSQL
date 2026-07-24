@@ -1,0 +1,30 @@
+WindowAgg  (cost=526425.04..620462.33 rows=502243 width=104) (actual time=4093.646..9135.498 rows=584377 loops=1)
+  Buffers: shared hit=119712 read=218080
+  I/O Timings: shared read=7741.095
+  ->  WindowAgg  (cost=526425.04..600372.61 rows=502243 width=52) (actual time=4093.619..6575.019 rows=584377 loops=1)
+        Buffers: shared hit=119712 read=218080
+        I/O Timings: shared read=7741.095
+        ->  Gather Merge  (cost=526425.04..586560.92 rows=502243 width=20) (actual time=4093.569..4296.504 rows=584377 loops=1)
+              Workers Planned: 4
+              Workers Launched: 4
+              Buffers: shared hit=119712 read=218080
+              I/O Timings: shared read=7741.095
+              ->  Sort  (cost=525424.98..525738.88 rows=125561 width=20) (actual time=4025.198..4035.610 rows=116875 loops=5)
+                    Sort Key: quotes.ts
+                    Sort Method: quicksort  Memory: 8742kB
+                    Buffers: shared hit=119712 read=218080
+                    I/O Timings: shared read=7741.095
+                    Worker 0:  Sort Method: quicksort  Memory: 8333kB
+                    Worker 1:  Sort Method: quicksort  Memory: 8514kB
+                    Worker 2:  Sort Method: quicksort  Memory: 8553kB
+                    Worker 3:  Sort Method: quicksort  Memory: 8613kB
+                    ->  Parallel Seq Scan on quotes  (cost=0.00..514791.20 rows=125561 width=20) (actual time=2480.451..3992.107 rows=116875 loops=5)
+                          Filter: ((ts >= '2026-03-04 00:00:00'::timestamp without time zone) AND (ts < '2026-03-05 00:00:00'::timestamp without time zone) AND (symbol = 'MSFT'::text))
+                          Rows Removed by Filter: 7984574
+                          Buffers: shared hit=119488 read=218080
+                          I/O Timings: shared read=7741.095
+Settings: effective_cache_size = '8GB', work_mem = '128MB', random_page_cost = '1.1', max_parallel_workers_per_gather = '4', jit = 'off'
+Planning:
+  Buffers: shared hit=13
+Planning Time: 2.653 ms
+Execution Time: 9188.352 ms

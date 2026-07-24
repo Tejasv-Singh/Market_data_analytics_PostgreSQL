@@ -1,0 +1,20 @@
+Nested Loop  (cost=1.13..10848.86 rows=16314 width=62) (actual time=0.203..252.413 rows=15055 loops=1)
+  Buffers: shared hit=60330 read=3
+  I/O Timings: shared read=0.129
+  ->  Index Only Scan using trades_sym_ts_cov on trades t  (cost=0.56..502.90 rows=16314 width=22) (actual time=0.071..4.977 rows=15055 loops=1)
+        Index Cond: ((symbol = 'MSFT'::text) AND (ts >= '2026-03-04 10:00:00'::timestamp without time zone) AND (ts < '2026-03-04 10:30:00'::timestamp without time zone))
+        Heap Fetches: 0
+        Buffers: shared hit=112
+  ->  Limit  (cost=0.56..0.59 rows=1 width=20) (actual time=0.014..0.014 rows=1 loops=15055)
+        Buffers: shared hit=60218 read=3
+        I/O Timings: shared read=0.129
+        ->  Index Only Scan Backward using quotes_sym_ts_cov on quotes  (cost=0.56..7203.99 rows=270027 width=20) (actual time=0.014..0.014 rows=1 loops=15055)
+              Index Cond: ((symbol = t.symbol) AND (ts <= t.ts))
+              Heap Fetches: 0
+              Buffers: shared hit=60218 read=3
+              I/O Timings: shared read=0.129
+Settings: effective_cache_size = '8GB', work_mem = '128MB', random_page_cost = '1.1', max_parallel_workers_per_gather = '4', jit = 'off'
+Planning:
+  Buffers: shared hit=2
+Planning Time: 0.331 ms
+Execution Time: 254.301 ms

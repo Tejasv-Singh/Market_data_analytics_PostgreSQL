@@ -1,0 +1,2175 @@
+{
+  "meta": {
+    "server_version": "16.2",
+    "params": {
+      "day": "2026-03-04",
+      "symbol": "MSFT",
+      "rare_symbol": "DDOG"
+    },
+    "runs": 3,
+    "tables": {
+      "trades": {
+        "rows": 15066061,
+        "bytes": 1028784128
+      },
+      "quotes": {
+        "rows": 40508160,
+        "bytes": 2765357056
+      }
+    },
+    "settings": {
+      "checkpoint_timeout": "1800s",
+      "effective_cache_size": "10485768kB",
+      "jit": "off",
+      "maintenance_work_mem": "1048576kB",
+      "max_parallel_maintenance_workers": "4",
+      "max_parallel_workers_per_gather": "4",
+      "max_wal_size": "8192MB",
+      "random_page_cost": "1.1",
+      "shared_buffers": "2621448kB",
+      "track_io_timing": "on",
+      "work_mem": "131072kB"
+    }
+  },
+  "scenarios": [
+    {
+      "name": "none",
+      "description": "No indexes: every query is a sequential scan.",
+      "indexes": [],
+      "queries": {
+        "q01_ohlcv_1m_one_symbol": {
+          "exec_ms": 1212.215,
+          "plan_ms": 0.378,
+          "scans": [
+            "Seq Scan [trades]"
+          ],
+          "rows_out": 390,
+          "shared_hit": 49246,
+          "shared_read": 76594,
+          "rows_removed_by_filter": 14878550,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 200,
+          "total_cost": 226321.56,
+          "exec_ms_all": [
+            1145.237,
+            1217.84,
+            1212.215
+          ],
+          "timeout": false
+        },
+        "q02_ohlcv_5m_all_symbols": {
+          "exec_ms": 4852.619,
+          "plan_ms": 0.353,
+          "scans": [
+            "Seq Scan [trades]"
+          ],
+          "rows_out": 3900,
+          "shared_hit": 49918,
+          "shared_read": 75954,
+          "rows_removed_by_filter": 13578095,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 10000,
+          "total_cost": 485855.8,
+          "exec_ms_all": [
+            5321.313,
+            4794.734,
+            4852.619
+          ],
+          "timeout": false
+        },
+        "q03_vwap_daily_all": {
+          "exec_ms": 37392.767,
+          "plan_ms": 0.186,
+          "scans": [
+            "Seq Scan [trades]"
+          ],
+          "rows_out": 500,
+          "shared_hit": 49886,
+          "shared_read": 75698,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 15063713,
+          "total_cost": 2893309.24,
+          "exec_ms_all": [
+            38045.791,
+            36994.315,
+            37392.767
+          ],
+          "timeout": false
+        },
+        "q04_vwap_running_and_rolling": {
+          "exec_ms": 1760.256,
+          "plan_ms": 0.167,
+          "scans": [
+            "Seq Scan [trades]"
+          ],
+          "rows_out": 187369,
+          "shared_hit": 50654,
+          "shared_read": 75186,
+          "rows_removed_by_filter": 14878550,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 176077,
+          "total_cost": 227089.9,
+          "exec_ms_all": [
+            1760.256,
+            1765.774,
+            1681.41
+          ],
+          "timeout": false
+        },
+        "q05_rolling_spread": {
+          "exec_ms": 7783.158,
+          "plan_ms": 0.202,
+          "scans": [
+            "Seq Scan [quotes]"
+          ],
+          "rows_out": 584377,
+          "shared_hit": 120192,
+          "shared_read": 217600,
+          "rows_removed_by_filter": 39922870,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 502243,
+          "total_cost": 620462.33,
+          "exec_ms_all": [
+            7831.994,
+            7559.179,
+            7783.158
+          ],
+          "timeout": false
+        },
+        "q06_time_weighted_spread": {
+          "exec_ms": 4150.112,
+          "plan_ms": 0.24,
+          "scans": [
+            "Seq Scan [quotes]"
+          ],
+          "rows_out": 390,
+          "shared_hit": 120832,
+          "shared_read": 216960,
+          "rows_removed_by_filter": 39922870,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 502243,
+          "total_cost": 673042.21,
+          "exec_ms_all": [
+            4150.112,
+            4363.28,
+            3847.633
+          ],
+          "timeout": false
+        },
+        "q07_effective_spread_asof": {
+          "timeout": true,
+          "exec_ms": null,
+          "scans": []
+        },
+        "q08_latest_trades_rare_symbol": {
+          "exec_ms": 808.461,
+          "plan_ms": 0.116,
+          "scans": [
+            "Seq Scan [trades]"
+          ],
+          "rows_out": 20,
+          "shared_hit": 51262,
+          "shared_read": 74546,
+          "rows_removed_by_filter": 15014805,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 20,
+          "total_cost": 174058.05,
+          "exec_ms_all": [
+            786.56,
+            821.135,
+            808.461
+          ],
+          "timeout": false
+        }
+      }
+    },
+    {
+      "name": "brin_ts",
+      "description": "BRIN on ts (both tables).",
+      "indexes": [
+        {
+          "name": "trades_ts_brin",
+          "ddl": "CREATE INDEX trades_ts_brin ON trades USING brin (ts)",
+          "build_s": 3.88,
+          "bytes": 49152
+        },
+        {
+          "name": "quotes_ts_brin",
+          "ddl": "CREATE INDEX quotes_ts_brin ON quotes USING brin (ts)",
+          "build_s": 11.51,
+          "bytes": 106496
+        }
+      ],
+      "queries": {
+        "q01_ohlcv_1m_one_symbol": {
+          "exec_ms": 428.002,
+          "plan_ms": 0.277,
+          "scans": [
+            "Bitmap Heap Scan [trades]",
+            "Bitmap Index Scan [trades_ts_brin]"
+          ],
+          "rows_out": 390,
+          "shared_hit": 12625,
+          "shared_read": 0,
+          "rows_removed_by_filter": 1300455,
+          "rows_removed_by_recheck": 3491,
+          "lossy_heap_blocks": 4260,
+          "est_rows": 200,
+          "total_cost": 163711.01,
+          "exec_ms_all": [
+            428.002,
+            428.727,
+            419.072
+          ],
+          "timeout": false
+        },
+        "q02_ohlcv_5m_all_symbols": {
+          "exec_ms": 9320.5,
+          "plan_ms": 0.299,
+          "scans": [
+            "Bitmap Heap Scan [trades]",
+            "Bitmap Index Scan [trades_ts_brin]"
+          ],
+          "rows_out": 3900,
+          "shared_hit": 12565,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 17457,
+          "lossy_heap_blocks": 12544,
+          "est_rows": 10000,
+          "total_cost": 369566.98,
+          "exec_ms_all": [
+            9475.523,
+            8542.087,
+            9320.5
+          ],
+          "timeout": false
+        },
+        "q03_vwap_daily_all": {
+          "exec_ms": 37711.74,
+          "plan_ms": 0.148,
+          "scans": [
+            "Seq Scan [trades]"
+          ],
+          "rows_out": 500,
+          "shared_hit": 51358,
+          "shared_read": 74226,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 15066564,
+          "total_cost": 2893854.23,
+          "exec_ms_all": [
+            37711.74,
+            37553.142,
+            38596.285
+          ],
+          "timeout": false
+        },
+        "q04_vwap_running_and_rolling": {
+          "exec_ms": 1089.071,
+          "plan_ms": 0.236,
+          "scans": [
+            "Bitmap Heap Scan [trades]",
+            "Bitmap Index Scan [trades_ts_brin]"
+          ],
+          "rows_out": 187369,
+          "shared_hit": 12625,
+          "shared_read": 0,
+          "rows_removed_by_filter": 1300455,
+          "rows_removed_by_recheck": 3491,
+          "lossy_heap_blocks": 4728,
+          "est_rows": 161991,
+          "total_cost": 164417.72,
+          "exec_ms_all": [
+            1106.362,
+            1089.071,
+            1085.412
+          ],
+          "timeout": false
+        },
+        "q05_rolling_spread": {
+          "exec_ms": 5290.844,
+          "plan_ms": 0.238,
+          "scans": [
+            "Bitmap Heap Scan [quotes]",
+            "Bitmap Index Scan [quotes_ts_brin]"
+          ],
+          "rows_out": 584377,
+          "shared_hit": 33450,
+          "shared_read": 0,
+          "rows_removed_by_filter": 3408870,
+          "rows_removed_by_recheck": 3143,
+          "lossy_heap_blocks": 9276,
+          "est_rows": 479489,
+          "total_cost": 456334.58,
+          "exec_ms_all": [
+            5290.844,
+            5418.899,
+            5241.917
+          ],
+          "timeout": false
+        },
+        "q06_time_weighted_spread": {
+          "exec_ms": 2232.269,
+          "plan_ms": 0.272,
+          "scans": [
+            "Bitmap Heap Scan [quotes]",
+            "Bitmap Index Scan [quotes_ts_brin]"
+          ],
+          "rows_out": 390,
+          "shared_hit": 33450,
+          "shared_read": 0,
+          "rows_removed_by_filter": 3408870,
+          "rows_removed_by_recheck": 3143,
+          "lossy_heap_blocks": 9227,
+          "est_rows": 479489,
+          "total_cost": 506371.98,
+          "exec_ms_all": [
+            2248.629,
+            2227.615,
+            2232.269
+          ],
+          "timeout": false
+        },
+        "q07_effective_spread_asof": {
+          "timeout": true,
+          "exec_ms": null,
+          "scans": []
+        },
+        "q08_latest_trades_rare_symbol": {
+          "exec_ms": 820.686,
+          "plan_ms": 0.131,
+          "scans": [
+            "Seq Scan [trades]"
+          ],
+          "rows_out": 20,
+          "shared_hit": 52094,
+          "shared_read": 73714,
+          "rows_removed_by_filter": 15014805,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 20,
+          "total_cost": 173970.15,
+          "exec_ms_all": [
+            793.7,
+            820.686,
+            835.172
+          ],
+          "timeout": false
+        }
+      }
+    },
+    {
+      "name": "btree_ts",
+      "description": "B-tree on ts (both tables).",
+      "indexes": [
+        {
+          "name": "trades_ts_btree",
+          "ddl": "CREATE INDEX trades_ts_btree ON trades (ts)",
+          "build_s": 8.34,
+          "bytes": 338419712
+        },
+        {
+          "name": "quotes_ts_btree",
+          "ddl": "CREATE INDEX quotes_ts_btree ON quotes (ts)",
+          "build_s": 24.09,
+          "bytes": 909885440
+        }
+      ],
+      "queries": {
+        "q01_ohlcv_1m_one_symbol": {
+          "exec_ms": 459.203,
+          "plan_ms": 0.267,
+          "scans": [
+            "Index Scan [trades_ts_btree]"
+          ],
+          "rows_out": 390,
+          "shared_hit": 20128,
+          "shared_read": 0,
+          "rows_removed_by_filter": 1300455,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 200,
+          "total_cost": 71929.68,
+          "exec_ms_all": [
+            459.203,
+            473.87,
+            449.06
+          ],
+          "timeout": false
+        },
+        "q02_ohlcv_5m_all_symbols": {
+          "exec_ms": 9507.303,
+          "plan_ms": 0.264,
+          "scans": [
+            "Index Scan [trades_ts_btree]"
+          ],
+          "rows_out": 3900,
+          "shared_hit": 16468,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 10000,
+          "total_cost": 295988.69,
+          "exec_ms_all": [
+            9734.648,
+            9507.303,
+            9277.049
+          ],
+          "timeout": false
+        },
+        "q03_vwap_daily_all": {
+          "exec_ms": 37861.435,
+          "plan_ms": 0.154,
+          "scans": [
+            "Seq Scan [trades]"
+          ],
+          "rows_out": 500,
+          "shared_hit": 52318,
+          "shared_read": 73266,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 15065220,
+          "total_cost": 2893597.34,
+          "exec_ms_all": [
+            38044.696,
+            37861.435,
+            37588.555
+          ],
+          "timeout": false
+        },
+        "q04_vwap_running_and_rolling": {
+          "exec_ms": 1342.147,
+          "plan_ms": 0.192,
+          "scans": [
+            "Index Scan [trades_ts_btree]"
+          ],
+          "rows_out": 187369,
+          "shared_hit": 16468,
+          "shared_read": 0,
+          "rows_removed_by_filter": 1300454,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 177264,
+          "total_cost": 69154.54,
+          "exec_ms_all": [
+            1329.032,
+            1342.147,
+            1347.256
+          ],
+          "timeout": false
+        },
+        "q05_rolling_spread": {
+          "exec_ms": 6138.066,
+          "plan_ms": 0.24,
+          "scans": [
+            "Index Scan [quotes_ts_btree]"
+          ],
+          "rows_out": 584377,
+          "shared_hit": 44192,
+          "shared_read": 0,
+          "rows_removed_by_filter": 3408870,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 498687,
+          "total_cost": 170789.91,
+          "exec_ms_all": [
+            6189.716,
+            6138.066,
+            6127.561
+          ],
+          "timeout": false
+        },
+        "q06_time_weighted_spread": {
+          "exec_ms": 3020.039,
+          "plan_ms": 0.405,
+          "scans": [
+            "Index Scan [quotes_ts_btree]"
+          ],
+          "rows_out": 390,
+          "shared_hit": 44192,
+          "shared_read": 0,
+          "rows_removed_by_filter": 3408870,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 498687,
+          "total_cost": 222971.96,
+          "exec_ms_all": [
+            3020.039,
+            3272.039,
+            3007.635
+          ],
+          "timeout": false
+        },
+        "q07_effective_spread_asof": {
+          "exec_ms": 183.737,
+          "plan_ms": 0.283,
+          "scans": [
+            "Index Scan [trades_ts_btree]",
+            "Index Scan [quotes_ts_btree]"
+          ],
+          "rows_out": 15055,
+          "shared_hit": 77900,
+          "shared_read": 0,
+          "rows_removed_by_filter": 195783,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 13294,
+          "total_cost": 32739.13,
+          "exec_ms_all": [
+            180.899,
+            188.998,
+            183.737
+          ],
+          "timeout": false
+        },
+        "q08_latest_trades_rare_symbol": {
+          "exec_ms": 1.317,
+          "plan_ms": 0.081,
+          "scans": [
+            "Index Scan [trades_ts_btree]"
+          ],
+          "rows_out": 20,
+          "shared_hit": 91,
+          "shared_read": 0,
+          "rows_removed_by_filter": 6262,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 20,
+          "total_cost": 188.6,
+          "exec_ms_all": [
+            1.317,
+            1.258,
+            1.411
+          ],
+          "timeout": false
+        }
+      }
+    },
+    {
+      "name": "btree_sym_ts",
+      "description": "Composite B-tree on (symbol, ts).",
+      "indexes": [
+        {
+          "name": "trades_sym_ts",
+          "ddl": "CREATE INDEX trades_sym_ts ON trades (symbol, ts)",
+          "build_s": 23.35,
+          "bytes": 475242496
+        },
+        {
+          "name": "quotes_sym_ts",
+          "ddl": "CREATE INDEX quotes_sym_ts ON quotes (symbol, ts)",
+          "build_s": 72.19,
+          "bytes": 1277706240
+        }
+      ],
+      "queries": {
+        "q01_ohlcv_1m_one_symbol": {
+          "exec_ms": 348.64,
+          "plan_ms": 0.104,
+          "scans": [
+            "Bitmap Heap Scan [trades]",
+            "Bitmap Index Scan [trades_sym_ts]"
+          ],
+          "rows_out": 390,
+          "shared_hit": 13122,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 200,
+          "total_cost": 137024.21,
+          "exec_ms_all": [
+            382.969,
+            348.64,
+            116.44
+          ],
+          "timeout": false
+        },
+        "q02_ohlcv_5m_all_symbols": {
+          "exec_ms": 5024.664,
+          "plan_ms": 0.314,
+          "scans": [
+            "Seq Scan [trades]"
+          ],
+          "rows_out": 3900,
+          "shared_hit": 53310,
+          "shared_read": 72562,
+          "rows_removed_by_filter": 13578095,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 10000,
+          "total_cost": 486145.17,
+          "exec_ms_all": [
+            5024.664,
+            4870.145,
+            5044.287
+          ],
+          "timeout": false
+        },
+        "q03_vwap_daily_all": {
+          "exec_ms": 38234.871,
+          "plan_ms": 0.158,
+          "scans": [
+            "Seq Scan [trades]"
+          ],
+          "rows_out": 500,
+          "shared_hit": 53278,
+          "shared_read": 72306,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 15068573,
+          "total_cost": 2894238.32,
+          "exec_ms_all": [
+            38234.871,
+            37664.076,
+            39012.401
+          ],
+          "timeout": false
+        },
+        "q04_vwap_running_and_rolling": {
+          "exec_ms": 1021.345,
+          "plan_ms": 0.21,
+          "scans": [
+            "Index Scan [trades_sym_ts]"
+          ],
+          "rows_out": 187369,
+          "shared_hit": 13122,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 178042,
+          "total_cost": 137034.8,
+          "exec_ms_all": [
+            1021.345,
+            1022.263,
+            1018.256
+          ],
+          "timeout": false
+        },
+        "q05_rolling_spread": {
+          "exec_ms": 5226.827,
+          "plan_ms": 0.245,
+          "scans": [
+            "Index Scan [quotes_sym_ts]"
+          ],
+          "rows_out": 584377,
+          "shared_hit": 35521,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 512182,
+          "total_cost": 366913.52,
+          "exec_ms_all": [
+            5426.084,
+            5226.827,
+            5207.498
+          ],
+          "timeout": false
+        },
+        "q06_time_weighted_spread": {
+          "exec_ms": 2176.498,
+          "plan_ms": 0.274,
+          "scans": [
+            "Index Scan [quotes_sym_ts]"
+          ],
+          "rows_out": 390,
+          "shared_hit": 35521,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 512182,
+          "total_cost": 420606.32,
+          "exec_ms_all": [
+            2176.498,
+            2197.938,
+            2138.775
+          ],
+          "timeout": false
+        },
+        "q07_effective_spread_asof": {
+          "exec_ms": 310.61,
+          "plan_ms": 0.283,
+          "scans": [
+            "Bitmap Heap Scan [trades]",
+            "Bitmap Index Scan [trades_sym_ts]",
+            "Index Scan [quotes_sym_ts]"
+          ],
+          "rows_out": 15055,
+          "shared_hit": 76342,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 15235,
+          "total_cost": 37371.64,
+          "exec_ms_all": [
+            310.61,
+            310.868,
+            308.617
+          ],
+          "timeout": false
+        },
+        "q08_latest_trades_rare_symbol": {
+          "exec_ms": 0.093,
+          "plan_ms": 0.116,
+          "scans": [
+            "Index Scan [trades_sym_ts]"
+          ],
+          "rows_out": 20,
+          "shared_hit": 19,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 20,
+          "total_cost": 18.79,
+          "exec_ms_all": [
+            0.119,
+            0.093,
+            0.082
+          ],
+          "timeout": false
+        }
+      }
+    },
+    {
+      "name": "covering",
+      "description": "Composite B-tree (symbol, ts) INCLUDE the columns queries read -> index-only scans.",
+      "indexes": [
+        {
+          "name": "trades_sym_ts_cov",
+          "ddl": "CREATE INDEX trades_sym_ts_cov ON trades (symbol, ts) INCLUDE (match_id, price, size)",
+          "build_s": 33.13,
+          "bytes": 885964800
+        },
+        {
+          "name": "quotes_sym_ts_cov",
+          "ddl": "CREATE INDEX quotes_sym_ts_cov ON quotes (symbol, ts) INCLUDE (bid_px, ask_px)",
+          "build_s": 77.62,
+          "bytes": 2008932352
+        }
+      ],
+      "queries": {
+        "q01_ohlcv_1m_one_symbol": {
+          "exec_ms": 347.91,
+          "plan_ms": 0.282,
+          "scans": [
+            "Index Only Scan [trades_sym_ts_cov]"
+          ],
+          "rows_out": 390,
+          "shared_hit": 1344,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 200,
+          "total_cost": 31273.67,
+          "exec_ms_all": [
+            351.31,
+            347.91,
+            346.238
+          ],
+          "timeout": false
+        },
+        "q02_ohlcv_5m_all_symbols": {
+          "exec_ms": 4486.371,
+          "plan_ms": 0.275,
+          "scans": [
+            "Seq Scan [trades]"
+          ],
+          "rows_out": 3900,
+          "shared_hit": 54270,
+          "shared_read": 71602,
+          "rows_removed_by_filter": 13578095,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 10000,
+          "total_cost": 485952.13,
+          "exec_ms_all": [
+            4449.851,
+            4565.849,
+            4486.371
+          ],
+          "timeout": false
+        },
+        "q03_vwap_daily_all": {
+          "exec_ms": 38980.012,
+          "plan_ms": 0.235,
+          "scans": [
+            "Seq Scan [trades]"
+          ],
+          "rows_out": 500,
+          "shared_hit": 54238,
+          "shared_read": 71346,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 15066564,
+          "total_cost": 2893854.23,
+          "exec_ms_all": [
+            38980.012,
+            38983.538,
+            38767.689
+          ],
+          "timeout": false
+        },
+        "q04_vwap_running_and_rolling": {
+          "exec_ms": 975.794,
+          "plan_ms": 0.201,
+          "scans": [
+            "Index Only Scan [trades_sym_ts_cov]"
+          ],
+          "rows_out": 187369,
+          "shared_hit": 1344,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 178386,
+          "total_cost": 23739.64,
+          "exec_ms_all": [
+            969.639,
+            977.634,
+            975.794
+          ],
+          "timeout": false
+        },
+        "q05_rolling_spread": {
+          "exec_ms": 5064.258,
+          "plan_ms": 0.257,
+          "scans": [
+            "Index Only Scan [quotes_sym_ts_cov]"
+          ],
+          "rows_out": 584377,
+          "shared_hit": 3526,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 499974,
+          "total_cost": 48334.5,
+          "exec_ms_all": [
+            5057.189,
+            5071.809,
+            5064.258
+          ],
+          "timeout": false
+        },
+        "q06_time_weighted_spread": {
+          "exec_ms": 2008.209,
+          "plan_ms": 0.283,
+          "scans": [
+            "Index Only Scan [quotes_sym_ts_cov]"
+          ],
+          "rows_out": 390,
+          "shared_hit": 3526,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 499974,
+          "total_cost": 100660.51,
+          "exec_ms_all": [
+            2037.493,
+            1994.888,
+            2008.209
+          ],
+          "timeout": false
+        },
+        "q07_effective_spread_asof": {
+          "exec_ms": 250.025,
+          "plan_ms": 0.289,
+          "scans": [
+            "Index Only Scan [trades_sym_ts_cov]",
+            "Index Only Scan [quotes_sym_ts_cov]"
+          ],
+          "rows_out": 15055,
+          "shared_hit": 60333,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 13639,
+          "total_cost": 9069.15,
+          "exec_ms_all": [
+            250.025,
+            248.234,
+            254.755
+          ],
+          "timeout": false
+        },
+        "q08_latest_trades_rare_symbol": {
+          "exec_ms": 0.07,
+          "plan_ms": 0.076,
+          "scans": [
+            "Index Scan [trades_sym_ts_cov]"
+          ],
+          "rows_out": 20,
+          "shared_hit": 19,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 20,
+          "total_cost": 19.21,
+          "exec_ms_all": [
+            0.089,
+            0.07,
+            0.06
+          ],
+          "timeout": false
+        }
+      }
+    },
+    {
+      "name": "brin_plus_covering",
+      "description": "What you'd ship: tiny BRIN for time slices + covering B-tree for per-symbol work.",
+      "indexes": [
+        {
+          "name": "trades_ts_brin",
+          "ddl": "CREATE INDEX trades_ts_brin ON trades USING brin (ts)",
+          "build_s": 3.88,
+          "bytes": 49152
+        },
+        {
+          "name": "quotes_ts_brin",
+          "ddl": "CREATE INDEX quotes_ts_brin ON quotes USING brin (ts)",
+          "build_s": 10.87,
+          "bytes": 106496
+        },
+        {
+          "name": "trades_sym_ts_cov",
+          "ddl": "CREATE INDEX trades_sym_ts_cov ON trades (symbol, ts) INCLUDE (match_id, price, size)",
+          "build_s": 26.72,
+          "bytes": 885964800
+        },
+        {
+          "name": "quotes_sym_ts_cov",
+          "ddl": "CREATE INDEX quotes_sym_ts_cov ON quotes (symbol, ts) INCLUDE (bid_px, ask_px)",
+          "build_s": 71.76,
+          "bytes": 2008932352
+        }
+      ],
+      "queries": {
+        "q01_ohlcv_1m_one_symbol": {
+          "exec_ms": 355.07,
+          "plan_ms": 0.295,
+          "scans": [
+            "Index Only Scan [trades_sym_ts_cov]"
+          ],
+          "rows_out": 390,
+          "shared_hit": 1344,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 200,
+          "total_cost": 30923.93,
+          "exec_ms_all": [
+            351.483,
+            360.547,
+            355.07
+          ],
+          "timeout": false
+        },
+        "q02_ohlcv_5m_all_symbols": {
+          "exec_ms": 9659.536,
+          "plan_ms": 0.294,
+          "scans": [
+            "Bitmap Heap Scan [trades]",
+            "Bitmap Index Scan [trades_ts_brin]"
+          ],
+          "rows_out": 3900,
+          "shared_hit": 12565,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 17457,
+          "lossy_heap_blocks": 12544,
+          "est_rows": 10000,
+          "total_cost": 397681.4,
+          "exec_ms_all": [
+            9251.662,
+            9659.536,
+            9810.392
+          ],
+          "timeout": false
+        },
+        "q03_vwap_daily_all": {
+          "exec_ms": 39209.613,
+          "plan_ms": 0.197,
+          "scans": [
+            "Seq Scan [trades]"
+          ],
+          "rows_out": 500,
+          "shared_hit": 54590,
+          "shared_read": 70994,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 15065559,
+          "total_cost": 2893662.1,
+          "exec_ms_all": [
+            38537.372,
+            39209.613,
+            39278.468
+          ],
+          "timeout": false
+        },
+        "q04_vwap_running_and_rolling": {
+          "exec_ms": 965.802,
+          "plan_ms": 0.267,
+          "scans": [
+            "Index Only Scan [trades_sym_ts_cov]"
+          ],
+          "rows_out": 187369,
+          "shared_hit": 1344,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 176469,
+          "total_cost": 23484.6,
+          "exec_ms_all": [
+            965.802,
+            978.967,
+            961.09
+          ],
+          "timeout": false
+        },
+        "q05_rolling_spread": {
+          "exec_ms": 5173.638,
+          "plan_ms": 0.252,
+          "scans": [
+            "Index Only Scan [quotes_sym_ts_cov]"
+          ],
+          "rows_out": 584377,
+          "shared_hit": 3526,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 494465,
+          "total_cost": 47802.39,
+          "exec_ms_all": [
+            5087.238,
+            5237.321,
+            5173.638
+          ],
+          "timeout": false
+        },
+        "q06_time_weighted_spread": {
+          "exec_ms": 2056.847,
+          "plan_ms": 0.317,
+          "scans": [
+            "Index Only Scan [quotes_sym_ts_cov]"
+          ],
+          "rows_out": 390,
+          "shared_hit": 3526,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 494465,
+          "total_cost": 99512.32,
+          "exec_ms_all": [
+            2036.402,
+            2075.876,
+            2056.847
+          ],
+          "timeout": false
+        },
+        "q07_effective_spread_asof": {
+          "exec_ms": 256.613,
+          "plan_ms": 0.351,
+          "scans": [
+            "Index Only Scan [trades_sym_ts_cov]",
+            "Index Only Scan [quotes_sym_ts_cov]"
+          ],
+          "rows_out": 15055,
+          "shared_hit": 60333,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 16314,
+          "total_cost": 10848.86,
+          "exec_ms_all": [
+            246.03,
+            257.307,
+            256.613
+          ],
+          "timeout": false
+        },
+        "q08_latest_trades_rare_symbol": {
+          "exec_ms": 0.081,
+          "plan_ms": 0.125,
+          "scans": [
+            "Index Scan [trades_sym_ts_cov]"
+          ],
+          "rows_out": 20,
+          "shared_hit": 19,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 20,
+          "total_cost": 19.45,
+          "exec_ms_all": [
+            0.093,
+            0.081,
+            0.079
+          ],
+          "timeout": false
+        }
+      }
+    }
+  ],
+  "experiments": [
+    {
+      "id": "group_estimate",
+      "title": "When the bottleneck isn't the scan: q03's sort and its group estimate",
+      "sql": "-- Daily VWAP and volume for every symbol over the whole dataset.\n-- Reads every trade: no index can make \"touch all rows\" cheaper than a sequential scan.\nSELECT ts::date                        AS day,\n       symbol,\n       sum(price * size) / sum(size)   AS vwap,\n       sum(size)                       AS volume,\n       count(*)                        AS n_trades\nFROM trades\nGROUP BY 1, 2\nORDER BY 1, 2;\n",
+      "indexes": [],
+      "variants": [
+        {
+          "label": "as-is (planner guesses ~15M groups)",
+          "exec_ms": 38238.216,
+          "plan_ms": 0.141,
+          "scans": [
+            "Seq Scan [trades]"
+          ],
+          "rows_out": 500,
+          "shared_hit": 54718,
+          "shared_read": 70866,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 15065559,
+          "total_cost": 2893662.1,
+          "exec_ms_all": [
+            38238.216,
+            37834.122,
+            38861.884
+          ],
+          "timeout": false
+        },
+        {
+          "label": "CREATE STATISTICS on (ts::date, symbol)",
+          "exec_ms": 3037.655,
+          "plan_ms": 0.176,
+          "scans": [
+            "Seq Scan [trades]"
+          ],
+          "rows_out": 500,
+          "shared_hit": 55326,
+          "shared_read": 70322,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 500,
+          "total_cost": 239892.67,
+          "exec_ms_all": [
+            3037.655,
+            3034.238,
+            3047.436
+          ],
+          "timeout": false
+        },
+        {
+          "label": "as-is, symbol compared with C collation",
+          "exec_ms": 24013.089,
+          "plan_ms": 0.146,
+          "scans": [
+            "Seq Scan [trades]"
+          ],
+          "rows_out": 500,
+          "shared_hit": 55550,
+          "shared_read": 70034,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 15067568,
+          "total_cost": 2984539.34,
+          "exec_ms_all": [
+            24013.089,
+            23776.061,
+            24351.859
+          ],
+          "timeout": false
+        }
+      ]
+    },
+    {
+      "id": "low_cardinality",
+      "title": "B-tree on a low-cardinality column (side = 'B'/'S')",
+      "sql": "SELECT count(*), sum(size) FROM trades WHERE side = 'B'",
+      "indexes": [
+        {
+          "name": "trades_side",
+          "ddl": "CREATE INDEX trades_side ON trades (side)",
+          "build_s": 8.07,
+          "bytes": 104423424
+        }
+      ],
+      "variants": [
+        {
+          "label": "no index",
+          "exec_ms": 1123.855,
+          "plan_ms": 0.112,
+          "scans": [
+            "Seq Scan [trades]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 56062,
+          "shared_read": 69522,
+          "rows_removed_by_filter": 7531365,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 1,
+          "total_cost": 183003.69,
+          "exec_ms_all": [
+            1112.233,
+            1131.205,
+            1123.855
+          ],
+          "timeout": false
+        },
+        {
+          "label": "btree(side), planner's choice",
+          "exec_ms": 1112.579,
+          "plan_ms": 0.135,
+          "scans": [
+            "Seq Scan [trades]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 56894,
+          "shared_read": 68690,
+          "rows_removed_by_filter": 7531365,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 1,
+          "total_cost": 183083.42,
+          "exec_ms_all": [
+            1125.827,
+            1112.579,
+            1107.833
+          ],
+          "timeout": false
+        },
+        {
+          "label": "btree(side), seq scan disabled",
+          "exec_ms": 786.086,
+          "plan_ms": 0.157,
+          "scans": [
+            "Index Scan [trades_side]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 137991,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 1,
+          "total_cost": 211654.72,
+          "exec_ms_all": [
+            814.973,
+            781.942,
+            786.086
+          ],
+          "timeout": false
+        }
+      ]
+    },
+    {
+      "id": "brin_uncorrelated",
+      "title": "BRIN on a column that is not physically ordered (symbol)",
+      "sql": "SELECT count(*), sum(size) FROM trades WHERE symbol = 'DDOG'",
+      "indexes": [
+        {
+          "name": "trades_sym_brin",
+          "ddl": "CREATE INDEX trades_sym_brin ON trades USING brin (symbol)",
+          "build_s": 12.64,
+          "bytes": 49152
+        },
+        {
+          "name": "trades_sym_btree",
+          "ddl": "CREATE INDEX trades_sym_btree ON trades (symbol)",
+          "build_s": 14.13,
+          "bytes": 104448000
+        }
+      ],
+      "variants": [
+        {
+          "label": "no index",
+          "exec_ms": 559.751,
+          "plan_ms": 0.141,
+          "scans": [
+            "Seq Scan [trades]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 125584,
+          "shared_read": 0,
+          "rows_removed_by_filter": 15014805,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 1,
+          "total_cost": 173713.59,
+          "exec_ms_all": [
+            574.948,
+            554.026,
+            559.751
+          ],
+          "timeout": false
+        },
+        {
+          "label": "brin(symbol)",
+          "exec_ms": 694.063,
+          "plan_ms": 0.166,
+          "scans": [
+            "Bitmap Heap Scan [trades]",
+            "Bitmap Index Scan [trades_sym_brin]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 125589,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 3002961,
+          "lossy_heap_blocks": 29929,
+          "est_rows": 1,
+          "total_cost": 128489.77,
+          "exec_ms_all": [
+            689.656,
+            695.938,
+            694.063
+          ],
+          "timeout": false
+        },
+        {
+          "label": "brin(symbol), seq scan disabled",
+          "exec_ms": 697.705,
+          "plan_ms": 0.164,
+          "scans": [
+            "Bitmap Heap Scan [trades]",
+            "Bitmap Index Scan [trades_sym_brin]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 125589,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 3002961,
+          "lossy_heap_blocks": 30007,
+          "est_rows": 1,
+          "total_cost": 128489.77,
+          "exec_ms_all": [
+            703.109,
+            689.636,
+            697.705
+          ],
+          "timeout": false
+        },
+        {
+          "label": "btree(symbol)",
+          "exec_ms": 94.773,
+          "plan_ms": 0.168,
+          "scans": [
+            "Bitmap Heap Scan [trades]",
+            "Bitmap Index Scan [trades_sym_btree]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 41921,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 1,
+          "total_cost": 48542.27,
+          "exec_ms_all": [
+            99.398,
+            90.017,
+            94.773
+          ],
+          "timeout": false
+        }
+      ],
+      "notes": {
+        "pg_stats.correlation": {
+          "symbol": 0.107,
+          "ts": 1.0
+        }
+      }
+    },
+    {
+      "id": "non_sargable",
+      "title": "Functions on the indexed column (non-sargable predicates)",
+      "sql": "SELECT count(*), sum(size) FROM trades WHERE date_trunc('hour', ts) = '2026-03-04 10:00'",
+      "indexes": [
+        {
+          "name": "trades_ts_btree",
+          "ddl": "CREATE INDEX trades_ts_btree ON trades (ts)",
+          "build_s": 7.04,
+          "bytes": 338419712
+        },
+        {
+          "name": "trades_hour_expr",
+          "ddl": "CREATE INDEX trades_hour_expr ON trades (date_trunc('hour', ts))",
+          "build_s": 5.53,
+          "bytes": 104456192
+        }
+      ],
+      "variants": [
+        {
+          "label": "date_trunc('hour', ts) = ...  with btree(ts)",
+          "exec_ms": 742.118,
+          "plan_ms": 0.128,
+          "scans": [
+            "Seq Scan [trades]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 125584,
+          "shared_read": 0,
+          "rows_removed_by_filter": 14842590,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 1,
+          "total_cost": 183170.67,
+          "exec_ms_all": [
+            742.118,
+            744.709,
+            741.094
+          ],
+          "timeout": false
+        },
+        {
+          "label": "ts >= ... AND ts < ...  with btree(ts)",
+          "exec_ms": 73.444,
+          "plan_ms": 0.153,
+          "scans": [
+            "Index Scan [trades_ts_btree]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 2703,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 1,
+          "total_cost": 7628.7,
+          "exec_ms_all": [
+            73.444,
+            75.985,
+            70.261
+          ],
+          "timeout": false
+        },
+        {
+          "label": "date_trunc('hour', ts) = ...  with expression index",
+          "exec_ms": 68.174,
+          "plan_ms": 0.155,
+          "scans": [
+            "Index Scan [trades_hour_expr]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 2097,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 1,
+          "total_cost": 6747.16,
+          "exec_ms_all": [
+            63.943,
+            68.692,
+            68.174
+          ],
+          "timeout": false
+        }
+      ]
+    },
+    {
+      "id": "selectivity",
+      "title": "Selectivity sweep: how wide can the window get before indexes stop helping?",
+      "sql": "SELECT count(*), sum(size) FROM trades WHERE ts >= '2026-03-02 09:30' AND ts < timestamp '2026-03-02 09:30' + interval '<window>'",
+      "indexes": [
+        {
+          "name": "trades_ts_brin",
+          "ddl": "CREATE INDEX trades_ts_brin ON trades USING brin (ts)",
+          "build_s": 3.07,
+          "bytes": 49152
+        },
+        {
+          "name": "trades_ts_btree",
+          "ddl": "CREATE INDEX trades_ts_btree ON trades (ts)",
+          "build_s": 6.86,
+          "bytes": 338419712
+        }
+      ],
+      "variants": [
+        {
+          "label": "no index | 1 minute",
+          "exec_ms": 425.76,
+          "plan_ms": 0.135,
+          "scans": [
+            "Seq Scan [trades]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 125584,
+          "shared_read": 0,
+          "rows_removed_by_filter": 15042950,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 1,
+          "total_cost": 183091.44,
+          "exec_ms_all": [
+            424.353,
+            425.76,
+            427.439
+          ],
+          "timeout": false
+        },
+        {
+          "label": "no index | 15 minutes",
+          "exec_ms": 420.973,
+          "plan_ms": 0.137,
+          "scans": [
+            "Seq Scan [trades]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 125584,
+          "shared_read": 0,
+          "rows_removed_by_filter": 14930805,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 1,
+          "total_cost": 183270.32,
+          "exec_ms_all": [
+            420.145,
+            424.14,
+            420.973
+          ],
+          "timeout": false
+        },
+        {
+          "label": "no index | 1 hour",
+          "exec_ms": 431.043,
+          "plan_ms": 0.131,
+          "scans": [
+            "Seq Scan [trades]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 125584,
+          "shared_read": 0,
+          "rows_removed_by_filter": 14728735,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 1,
+          "total_cost": 183542.6,
+          "exec_ms_all": [
+            428.158,
+            431.043,
+            433.941
+          ],
+          "timeout": false
+        },
+        {
+          "label": "no index | 1 day",
+          "exec_ms": 474.133,
+          "plan_ms": 0.135,
+          "scans": [
+            "Seq Scan [trades]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 125584,
+          "shared_read": 0,
+          "rows_removed_by_filter": 13514835,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 1,
+          "total_cost": 185149.1,
+          "exec_ms_all": [
+            472.737,
+            474.133,
+            497.089
+          ],
+          "timeout": false
+        },
+        {
+          "label": "no index | 3 days",
+          "exec_ms": 589.037,
+          "plan_ms": 0.132,
+          "scans": [
+            "Seq Scan [trades]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 125584,
+          "shared_read": 0,
+          "rows_removed_by_filter": 10515735,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 1,
+          "total_cost": 189103.21,
+          "exec_ms_all": [
+            589.839,
+            587.933,
+            589.037
+          ],
+          "timeout": false
+        },
+        {
+          "label": "no index | all 10 days",
+          "exec_ms": 963.769,
+          "plan_ms": 0.133,
+          "scans": [
+            "Seq Scan [trades]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 125584,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 1,
+          "total_cost": 201908.47,
+          "exec_ms_all": [
+            969.616,
+            963.769,
+            962.139
+          ],
+          "timeout": false
+        },
+        {
+          "label": "brin(ts) | 1 minute",
+          "exec_ms": 7.682,
+          "plan_ms": 0.111,
+          "scans": [
+            "Bitmap Heap Scan [trades]",
+            "Bitmap Index Scan [trades_ts_brin]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 277,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 7750,
+          "lossy_heap_blocks": 256,
+          "est_rows": 1,
+          "total_cost": 15688.51,
+          "exec_ms_all": [
+            7.745,
+            7.682,
+            7.535
+          ],
+          "timeout": false
+        },
+        {
+          "label": "brin(ts) | 15 minutes",
+          "exec_ms": 81.009,
+          "plan_ms": 0.179,
+          "scans": [
+            "Bitmap Heap Scan [trades]",
+            "Bitmap Index Scan [trades_ts_brin]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 1173,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 626,
+          "lossy_heap_blocks": 1152,
+          "est_rows": 1,
+          "total_cost": 92222.86,
+          "exec_ms_all": [
+            81.1,
+            74.441,
+            81.009
+          ],
+          "timeout": false
+        },
+        {
+          "label": "brin(ts) | 1 hour",
+          "exec_ms": 94.651,
+          "plan_ms": 0.167,
+          "scans": [
+            "Bitmap Heap Scan [trades]",
+            "Bitmap Index Scan [trades_ts_brin]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 2837,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 147,
+          "lossy_heap_blocks": 2092,
+          "est_rows": 1,
+          "total_cost": 128442.44,
+          "exec_ms_all": [
+            94.651,
+            96.418,
+            90.954
+          ],
+          "timeout": false
+        },
+        {
+          "label": "brin(ts) | 1 day",
+          "exec_ms": 167.773,
+          "plan_ms": 0.158,
+          "scans": [
+            "Bitmap Heap Scan [trades]",
+            "Bitmap Index Scan [trades_ts_brin]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 12949,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 56,
+          "lossy_heap_blocks": 4176,
+          "est_rows": 1,
+          "total_cost": 135289.26,
+          "exec_ms_all": [
+            167.423,
+            167.773,
+            172.057
+          ],
+          "timeout": false
+        },
+        {
+          "label": "brin(ts) | 3 days",
+          "exec_ms": 364.322,
+          "plan_ms": 0.158,
+          "scans": [
+            "Bitmap Heap Scan [trades]",
+            "Bitmap Index Scan [trades_ts_brin]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 38037,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 2348,
+          "lossy_heap_blocks": 8937,
+          "est_rows": 1,
+          "total_cost": 150348.1,
+          "exec_ms_all": [
+            364.322,
+            371.055,
+            361.691
+          ],
+          "timeout": false
+        },
+        {
+          "label": "brin(ts) | all 10 days",
+          "exec_ms": 967.451,
+          "plan_ms": 0.165,
+          "scans": [
+            "Seq Scan [trades]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 125584,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 1,
+          "total_cost": 201905.96,
+          "exec_ms_all": [
+            966.716,
+            967.451,
+            988.0
+          ],
+          "timeout": false
+        },
+        {
+          "label": "btree(ts) | 1 minute",
+          "exec_ms": 7.795,
+          "plan_ms": 0.142,
+          "scans": [
+            "Index Scan [trades_ts_btree]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 257,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 1,
+          "total_cost": 295.02,
+          "exec_ms_all": [
+            7.719,
+            7.795,
+            8.567
+          ],
+          "timeout": false
+        },
+        {
+          "label": "btree(ts) | 15 minutes",
+          "exec_ms": 63.827,
+          "plan_ms": 0.197,
+          "scans": [
+            "Index Scan [trades_ts_btree]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 1498,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 1,
+          "total_cost": 4333.34,
+          "exec_ms_all": [
+            70.134,
+            63.827,
+            62.287
+          ],
+          "timeout": false
+        },
+        {
+          "label": "btree(ts) | 1 hour",
+          "exec_ms": 93.783,
+          "plan_ms": 0.285,
+          "scans": [
+            "Index Scan [trades_ts_btree]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 4216,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 1,
+          "total_cost": 9911.46,
+          "exec_ms_all": [
+            93.783,
+            87.679,
+            111.575
+          ],
+          "timeout": false
+        },
+        {
+          "label": "btree(ts) | 1 day",
+          "exec_ms": 206.704,
+          "plan_ms": 0.191,
+          "scans": [
+            "Index Scan [trades_ts_btree]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 20991,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 1,
+          "total_cost": 42559.35,
+          "exec_ms_all": [
+            206.704,
+            200.94,
+            207.319
+          ],
+          "timeout": false
+        },
+        {
+          "label": "btree(ts) | 3 days",
+          "exec_ms": 463.27,
+          "plan_ms": 0.195,
+          "scans": [
+            "Index Scan [trades_ts_btree]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 62359,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 1,
+          "total_cost": 118194.45,
+          "exec_ms_all": [
+            468.212,
+            463.032,
+            463.27
+          ],
+          "timeout": false
+        },
+        {
+          "label": "btree(ts) | all 10 days",
+          "exec_ms": 974.183,
+          "plan_ms": 0.214,
+          "scans": [
+            "Seq Scan [trades]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 125584,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 1,
+          "total_cost": 201917.26,
+          "exec_ms_all": [
+            979.216,
+            968.528,
+            974.183
+          ],
+          "timeout": false
+        }
+      ]
+    },
+    {
+      "id": "brin_pages_per_range",
+      "title": "BRIN pages_per_range trade-off (1-hour window)",
+      "sql": "SELECT count(*), sum(size) FROM trades\nWHERE ts >= '2026-03-04 10:00' AND ts < '2026-03-04 11:00'",
+      "indexes": [
+        {
+          "name": "trades_ts_brin_8",
+          "ddl": "CREATE INDEX trades_ts_brin_8 ON trades USING brin (ts) WITH (pages_per_range = 8)",
+          "build_s": 3.09,
+          "bytes": 548864
+        },
+        {
+          "name": "trades_ts_brin_32",
+          "ddl": "CREATE INDEX trades_ts_brin_32 ON trades USING brin (ts) WITH (pages_per_range = 32)",
+          "build_s": 3.15,
+          "bytes": 147456
+        },
+        {
+          "name": "trades_ts_brin_128",
+          "ddl": "CREATE INDEX trades_ts_brin_128 ON trades USING brin (ts) WITH (pages_per_range = 128)",
+          "build_s": 3.06,
+          "bytes": 49152
+        },
+        {
+          "name": "trades_ts_brin_512",
+          "ddl": "CREATE INDEX trades_ts_brin_512 ON trades USING brin (ts) WITH (pages_per_range = 512)",
+          "build_s": 3.05,
+          "bytes": 24576
+        }
+      ],
+      "variants": [
+        {
+          "label": "pages_per_range=8",
+          "exec_ms": 86.213,
+          "plan_ms": 0.152,
+          "scans": [
+            "Bitmap Heap Scan [trades]",
+            "Bitmap Index Scan [trades_ts_brin_8]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 1992,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 262,
+          "lossy_heap_blocks": 1660,
+          "est_rows": 1,
+          "total_cost": 120627.88,
+          "exec_ms_all": [
+            96.019,
+            79.496,
+            86.213
+          ],
+          "timeout": false
+        },
+        {
+          "label": "pages_per_range=32",
+          "exec_ms": 91.1,
+          "plan_ms": 0.251,
+          "scans": [
+            "Bitmap Heap Scan [trades]",
+            "Bitmap Index Scan [trades_ts_brin_32]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 1957,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 1414,
+          "lossy_heap_blocks": 1691,
+          "est_rows": 1,
+          "total_cost": 116231.6,
+          "exec_ms_all": [
+            93.395,
+            91.1,
+            85.274
+          ],
+          "timeout": false
+        },
+        {
+          "label": "pages_per_range=128",
+          "exec_ms": 95.281,
+          "plan_ms": 0.174,
+          "scans": [
+            "Bitmap Heap Scan [trades]",
+            "Bitmap Index Scan [trades_ts_brin_128]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 2069,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 4486,
+          "lossy_heap_blocks": 1893,
+          "est_rows": 1,
+          "total_cost": 118377.72,
+          "exec_ms_all": [
+            95.281,
+            83.229,
+            98.226
+          ],
+          "timeout": false
+        },
+        {
+          "label": "pages_per_range=512",
+          "exec_ms": 82.759,
+          "plan_ms": 0.174,
+          "scans": [
+            "Bitmap Heap Scan [trades]",
+            "Bitmap Index Scan [trades_ts_brin_512]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 2050,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 4486,
+          "lossy_heap_blocks": 1548,
+          "est_rows": 1,
+          "total_cost": 126363.02,
+          "exec_ms_all": [
+            82.759,
+            78.579,
+            107.677
+          ],
+          "timeout": false
+        }
+      ]
+    },
+    {
+      "id": "brin_physical_order",
+      "title": "BRIN depends on physical row order (1-hour window, shuffled copy)",
+      "sql": "SELECT count(*), sum(size) FROM <table>\nWHERE ts >= '2026-03-04 10:00' AND ts < '2026-03-04 11:00'",
+      "indexes": [
+        {
+          "name": "trades_ts_brin",
+          "ddl": "CREATE INDEX trades_ts_brin ON trades USING brin (ts)",
+          "build_s": 3.1,
+          "bytes": 49152
+        },
+        {
+          "name": "trades_shuf_ts_brin",
+          "ddl": "CREATE INDEX trades_shuf_ts_brin ON trades_shuffled USING brin (ts)",
+          "build_s": 4.28,
+          "bytes": 49152
+        },
+        {
+          "name": "trades_shuf_ts_btree",
+          "ddl": "CREATE INDEX trades_shuf_ts_btree ON trades_shuffled (ts)",
+          "build_s": 9.15,
+          "bytes": 338419712
+        }
+      ],
+      "variants": [
+        {
+          "label": "time-ordered table, brin(ts)",
+          "exec_ms": 84.798,
+          "plan_ms": 0.174,
+          "scans": [
+            "Bitmap Heap Scan [trades]",
+            "Bitmap Index Scan [trades_ts_brin]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 2069,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 4486,
+          "lossy_heap_blocks": 1649,
+          "est_rows": 1,
+          "total_cost": 126494.67,
+          "exec_ms_all": [
+            84.798,
+            89.498,
+            81.32
+          ],
+          "timeout": false
+        },
+        {
+          "label": "shuffled table, brin(ts)",
+          "exec_ms": 898.342,
+          "plan_ms": 0.149,
+          "scans": [
+            "Seq Scan [trades_shuffled]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 2592,
+          "shared_read": 122976,
+          "rows_removed_by_filter": 14842590,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 1,
+          "total_cost": 183341.26,
+          "exec_ms_all": [
+            899.297,
+            898.342,
+            890.167
+          ],
+          "timeout": false
+        },
+        {
+          "label": "shuffled table, brin(ts), seq scan disabled",
+          "exec_ms": 662.521,
+          "plan_ms": 0.164,
+          "scans": [
+            "Bitmap Heap Scan [trades_shuffled]",
+            "Bitmap Index Scan [trades_shuf_ts_brin]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 125573,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 2968518,
+          "lossy_heap_blocks": 32084,
+          "est_rows": 1,
+          "total_cost": 183434.37,
+          "exec_ms_all": [
+            985.543,
+            662.521,
+            658.765
+          ],
+          "timeout": false
+        },
+        {
+          "label": "shuffled table, btree(ts)",
+          "exec_ms": 344.498,
+          "plan_ms": 0.177,
+          "scans": [
+            "Index Scan [trades_shuf_ts_btree]"
+          ],
+          "rows_out": 1,
+          "shared_hit": 223940,
+          "shared_read": 0,
+          "rows_removed_by_filter": 0,
+          "rows_removed_by_recheck": 0,
+          "lossy_heap_blocks": 0,
+          "est_rows": 1,
+          "total_cost": 135328.99,
+          "exec_ms_all": [
+            344.498,
+            339.304,
+            349.818
+          ],
+          "timeout": false
+        }
+      ],
+      "notes": {
+        "pg_stats.correlation(ts)": {
+          "trades": 1.0,
+          "trades_shuffled": -0.002
+        }
+      }
+    }
+  ]
+}

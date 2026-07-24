@@ -1,0 +1,16 @@
+-- cancelled after statement_timeout=60s
+-- estimated plan:
+Nested Loop  (cost=541725.81..7081935927.09 rows=13073 width=62)
+  ->  Bitmap Heap Scan on trades t  (cost=10.12..86172.46 rows=13073 width=22)
+        Recheck Cond: ((ts >= '2026-03-04 10:00:00'::timestamp without time zone) AND (ts < '2026-03-04 10:30:00'::timestamp without time zone))
+        Filter: (symbol = 'MSFT'::text)
+        ->  Bitmap Index Scan on trades_ts_brin  (cost=0.00..6.86 rows=122742 width=0)
+              Index Cond: ((ts >= '2026-03-04 10:00:00'::timestamp without time zone) AND (ts < '2026-03-04 10:30:00'::timestamp without time zone))
+  ->  Limit  (cost=541715.69..541715.69 rows=1 width=20)
+        ->  Sort  (cost=541715.69..542390.80 rows=270045 width=20)
+              Sort Key: quotes.ts DESC
+              ->  Bitmap Heap Scan on quotes  (cost=109.87..540365.46 rows=270045 width=20)
+                    Recheck Cond: (ts <= t.ts)
+                    Filter: (symbol = t.symbol)
+                    ->  Bitmap Index Scan on quotes_ts_brin  (cost=0.00..42.36 rows=13512506 width=0)
+                          Index Cond: (ts <= t.ts)

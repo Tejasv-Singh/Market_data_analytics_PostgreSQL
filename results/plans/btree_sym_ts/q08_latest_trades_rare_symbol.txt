@@ -1,0 +1,12 @@
+Limit  (cost=0.56..18.79 rows=20 width=20) (actual time=2.743..2.770 rows=20 loops=1)
+  Buffers: shared hit=17 read=2
+  I/O Timings: shared read=2.637
+  ->  Index Scan Backward using trades_sym_ts on trades  (cost=0.56..52652.53 rows=57763 width=20) (actual time=2.740..2.764 rows=20 loops=1)
+        Index Cond: (symbol = 'DDOG'::text)
+        Buffers: shared hit=17 read=2
+        I/O Timings: shared read=2.637
+Settings: effective_cache_size = '8GB', work_mem = '128MB', random_page_cost = '1.1', max_parallel_workers_per_gather = '4', jit = 'off'
+Planning:
+  Buffers: shared hit=3
+Planning Time: 0.187 ms
+Execution Time: 2.795 ms

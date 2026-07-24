@@ -1,0 +1,12 @@
+-- cancelled after statement_timeout=60s
+-- estimated plan:
+Nested Loop  (cost=947540.67..14537166324.51 rows=15358 width=62)
+  ->  Gather  (cost=1000.00..194023.54 rows=15358 width=22)
+        Workers Planned: 4
+        ->  Parallel Seq Scan on trades t  (cost=0.00..191487.74 rows=3840 width=22)
+              Filter: ((ts >= '2026-03-04 10:00:00'::timestamp without time zone) AND (ts < '2026-03-04 10:30:00'::timestamp without time zone) AND (symbol = 'MSFT'::text))
+  ->  Limit  (cost=946540.67..946540.67 rows=1 width=20)
+        ->  Sort  (cost=946540.67..947215.81 rows=270054 width=20)
+              Sort Key: quotes.ts DESC
+              ->  Seq Scan on quotes  (cost=0.00..945190.40 rows=270054 width=20)
+                    Filter: ((ts <= t.ts) AND (symbol = t.symbol))

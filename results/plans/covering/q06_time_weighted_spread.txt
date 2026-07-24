@@ -1,0 +1,18 @@
+GroupAggregate  (cost=76911.75..100660.51 rows=499974 width=48) (actual time=1465.451..2044.401 rows=390 loops=1)
+  Group Key: (date_bin('00:01:00'::interval, q.ts, '2026-03-04 00:00:00'::timestamp without time zone))
+  Buffers: shared hit=3526
+  ->  Sort  (cost=76911.75..78161.68 rows=499974 width=56) (actual time=1457.039..1511.536 rows=584377 loops=1)
+        Sort Key: (date_bin('00:01:00'::interval, q.ts, '2026-03-04 00:00:00'::timestamp without time zone))
+        Sort Method: quicksort  Memory: 61100kB
+        Buffers: shared hit=3526
+        ->  Subquery Scan on q  (cost=0.56..29585.47 rows=499974 width=56) (actual time=0.105..1295.264 rows=584377 loops=1)
+              Buffers: shared hit=3526
+              ->  WindowAgg  (cost=0.56..28335.54 rows=499974 width=48) (actual time=0.102..1186.125 rows=584377 loops=1)
+                    Buffers: shared hit=3526
+                    ->  Index Only Scan using quotes_sym_ts_cov on quotes  (cost=0.56..14586.25 rows=499974 width=20) (actual time=0.075..200.047 rows=584377 loops=1)
+                          Index Cond: ((symbol = 'MSFT'::text) AND (ts >= '2026-03-04 00:00:00'::timestamp without time zone) AND (ts < '2026-03-05 00:00:00'::timestamp without time zone))
+                          Heap Fetches: 0
+                          Buffers: shared hit=3526
+Settings: effective_cache_size = '8GB', work_mem = '128MB', random_page_cost = '1.1', max_parallel_workers_per_gather = '4', jit = 'off'
+Planning Time: 0.267 ms
+Execution Time: 2050.190 ms

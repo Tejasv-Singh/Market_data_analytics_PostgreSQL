@@ -1,0 +1,18 @@
+GroupAggregate  (cost=205524.85..295988.69 rows=10000 width=156) (actual time=7039.528..9359.042 rows=3900 loops=1)
+  Group Key: trades.symbol, (date_bin('00:05:00'::interval, trades.ts, '2026-03-04 00:00:00'::timestamp without time zone))
+  Buffers: shared hit=16468, temp read=9819 written=9820
+  I/O Timings: temp read=77.458 write=181.390
+  ->  WindowAgg  (cost=205524.85..250706.77 rows=1506064 width=102) (actual time=7018.424..8604.091 rows=1487823 loops=1)
+        Buffers: shared hit=16468, temp read=9819 written=9820
+        I/O Timings: temp read=77.458 write=181.390
+        ->  Sort  (cost=205524.85..209290.01 rows=1506064 width=38) (actual time=7011.585..7339.292 rows=1487823 loops=1)
+              Sort Key: trades.symbol, (date_bin('00:05:00'::interval, trades.ts, '2026-03-04 00:00:00'::timestamp without time zone)), trades.ts, trades.match_id
+              Sort Method: external merge  Disk: 78552kB
+              Buffers: shared hit=16468, temp read=9819 written=9820
+              I/O Timings: temp read=77.458 write=181.390
+              ->  Index Scan using trades_ts_btree on trades  (cost=0.43..50984.98 rows=1506064 width=38) (actual time=0.052..499.316 rows=1487823 loops=1)
+                    Index Cond: ((ts >= '2026-03-04 00:00:00'::timestamp without time zone) AND (ts < '2026-03-05 00:00:00'::timestamp without time zone))
+                    Buffers: shared hit=16468
+Settings: effective_cache_size = '8GB', work_mem = '128MB', random_page_cost = '1.1', max_parallel_workers_per_gather = '4', jit = 'off'
+Planning Time: 0.293 ms
+Execution Time: 9394.501 ms

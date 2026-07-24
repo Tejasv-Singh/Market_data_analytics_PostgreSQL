@@ -1,0 +1,37 @@
+GroupAggregate  (cost=649185.67..673042.21 rows=502243 width=48) (actual time=3923.688..4505.203 rows=390 loops=1)
+  Group Key: (date_bin('00:01:00'::interval, q.ts, '2026-03-04 00:00:00'::timestamp without time zone))
+  Buffers: shared hit=120352 read=217440
+  I/O Timings: shared read=6730.461
+  ->  Sort  (cost=649185.67..650441.28 rows=502243 width=56) (actual time=3915.144..3967.154 rows=584377 loops=1)
+        Sort Key: (date_bin('00:01:00'::interval, q.ts, '2026-03-04 00:00:00'::timestamp without time zone))
+        Sort Method: quicksort  Memory: 61100kB
+        Buffers: shared hit=120352 read=217440
+        I/O Timings: shared read=6730.461
+        ->  Subquery Scan on q  (cost=526425.04..601628.21 rows=502243 width=56) (actual time=2568.750..3741.750 rows=584377 loops=1)
+              Buffers: shared hit=120352 read=217440
+              I/O Timings: shared read=6730.461
+              ->  WindowAgg  (cost=526425.04..600372.61 rows=502243 width=48) (actual time=2568.747..3635.252 rows=584377 loops=1)
+                    Buffers: shared hit=120352 read=217440
+                    I/O Timings: shared read=6730.461
+                    ->  Gather Merge  (cost=526425.04..586560.92 rows=502243 width=20) (actual time=2568.710..2714.602 rows=584377 loops=1)
+                          Workers Planned: 4
+                          Workers Launched: 4
+                          Buffers: shared hit=120352 read=217440
+                          I/O Timings: shared read=6730.461
+                          ->  Sort  (cost=525424.98..525738.88 rows=125561 width=20) (actual time=2509.636..2520.177 rows=116875 loops=5)
+                                Sort Key: quotes.ts
+                                Sort Method: quicksort  Memory: 8983kB
+                                Buffers: shared hit=120352 read=217440
+                                I/O Timings: shared read=6730.461
+                                Worker 0:  Sort Method: quicksort  Memory: 8117kB
+                                Worker 1:  Sort Method: quicksort  Memory: 8717kB
+                                Worker 2:  Sort Method: quicksort  Memory: 8586kB
+                                Worker 3:  Sort Method: quicksort  Memory: 8353kB
+                                ->  Parallel Seq Scan on quotes  (cost=0.00..514791.20 rows=125561 width=20) (actual time=1528.544..2477.307 rows=116875 loops=5)
+                                      Filter: ((ts >= '2026-03-04 00:00:00'::timestamp without time zone) AND (ts < '2026-03-05 00:00:00'::timestamp without time zone) AND (symbol = 'MSFT'::text))
+                                      Rows Removed by Filter: 7984574
+                                      Buffers: shared hit=120128 read=217440
+                                      I/O Timings: shared read=6730.461
+Settings: effective_cache_size = '8GB', work_mem = '128MB', random_page_cost = '1.1', max_parallel_workers_per_gather = '4', jit = 'off'
+Planning Time: 0.265 ms
+Execution Time: 4511.774 ms

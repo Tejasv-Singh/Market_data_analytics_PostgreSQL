@@ -1,0 +1,18 @@
+WindowAgg  (cost=0.60..23484.60 rows=176469 width=90) (actual time=0.125..953.138 rows=187369 loops=1)
+  Buffers: shared hit=1344
+  ->  WindowAgg  (cost=0.60..17749.36 rows=176469 width=66) (actual time=0.105..358.318 rows=187369 loops=1)
+        Buffers: shared hit=1344
+        ->  Incremental Sort  (cost=0.60..13337.63 rows=176469 width=26) (actual time=0.088..124.088 rows=187369 loops=1)
+              Sort Key: ts, match_id
+              Presorted Key: ts
+              Full-sort Groups: 5856  Sort Method: quicksort  Average Memory: 26kB  Peak Memory: 26kB
+              Buffers: shared hit=1344
+              ->  Index Only Scan using trades_sym_ts_cov on trades  (cost=0.56..5396.53 rows=176469 width=26) (actual time=0.052..61.864 rows=187369 loops=1)
+                    Index Cond: ((symbol = 'MSFT'::text) AND (ts >= '2026-03-04 00:00:00'::timestamp without time zone) AND (ts < '2026-03-05 00:00:00'::timestamp without time zone))
+                    Heap Fetches: 0
+                    Buffers: shared hit=1344
+Settings: effective_cache_size = '8GB', work_mem = '128MB', random_page_cost = '1.1', max_parallel_workers_per_gather = '4', jit = 'off'
+Planning:
+  Buffers: shared hit=1
+Planning Time: 0.221 ms
+Execution Time: 970.244 ms

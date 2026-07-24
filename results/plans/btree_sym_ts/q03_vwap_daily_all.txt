@@ -1,0 +1,15 @@
+GroupAggregate  (cost=2291495.40..2894238.32 rows=15068573 width=56) (actual time=27928.338..38695.708 rows=500 loops=1)
+  Group Key: ((ts)::date), symbol
+  Buffers: shared hit=53182 read=72402, temp read=55551 written=55559
+  I/O Timings: shared read=678.177, temp read=454.457 write=1130.978
+  ->  Sort  (cost=2291495.40..2329166.83 rows=15068573 width=18) (actual time=27613.496..30775.769 rows=15065919 loops=1)
+        Sort Key: ((ts)::date), symbol
+        Sort Method: external merge  Disk: 444408kB
+        Buffers: shared hit=53182 read=72402, temp read=55551 written=55559
+        I/O Timings: shared read=678.177, temp read=454.457 write=1130.978
+        ->  Seq Scan on trades  (cost=0.00..313941.16 rows=15068573 width=18) (actual time=0.025..4057.324 rows=15065919 loops=1)
+              Buffers: shared hit=53182 read=72402
+              I/O Timings: shared read=678.177
+Settings: effective_cache_size = '8GB', work_mem = '128MB', random_page_cost = '1.1', max_parallel_workers_per_gather = '4', jit = 'off'
+Planning Time: 0.156 ms
+Execution Time: 38818.490 ms

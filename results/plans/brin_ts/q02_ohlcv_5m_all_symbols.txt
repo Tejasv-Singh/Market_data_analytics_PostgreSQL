@@ -1,0 +1,25 @@
+GroupAggregate  (cost=288041.64..369566.98 rows=10000 width=156) (actual time=7012.238..9339.379 rows=3900 loops=1)
+  Group Key: trades.symbol, (date_bin('00:05:00'::interval, trades.ts, '2026-03-04 00:00:00'::timestamp without time zone))
+  Buffers: shared hit=12565, temp read=9819 written=9820
+  I/O Timings: temp read=72.492 write=190.408
+  ->  WindowAgg  (cost=288041.64..328754.31 rows=1357089 width=102) (actual time=6991.097..8584.790 rows=1487823 loops=1)
+        Buffers: shared hit=12565, temp read=9819 written=9820
+        I/O Timings: temp read=72.492 write=190.408
+        ->  Sort  (cost=288041.64..291434.37 rows=1357089 width=38) (actual time=6984.633..7320.629 rows=1487823 loops=1)
+              Sort Key: trades.symbol, (date_bin('00:05:00'::interval, trades.ts, '2026-03-04 00:00:00'::timestamp without time zone)), trades.ts, trades.match_id
+              Sort Method: external merge  Disk: 78552kB
+              Buffers: shared hit=12565, temp read=9819 written=9820
+              I/O Timings: temp read=72.492 write=190.408
+              ->  Bitmap Heap Scan on trades  (cost=348.72..149807.99 rows=1357089 width=38) (actual time=1.352..409.892 rows=1487823 loops=1)
+                    Recheck Cond: ((ts >= '2026-03-04 00:00:00'::timestamp without time zone) AND (ts < '2026-03-05 00:00:00'::timestamp without time zone))
+                    Rows Removed by Index Recheck: 17457
+                    Heap Blocks: lossy=12544
+                    Buffers: shared hit=12565
+                    ->  Bitmap Index Scan on trades_ts_brin  (cost=0.00..9.45 rows=1365503 width=0) (actual time=0.534..0.535 rows=125600 loops=1)
+                          Index Cond: ((ts >= '2026-03-04 00:00:00'::timestamp without time zone) AND (ts < '2026-03-05 00:00:00'::timestamp without time zone))
+                          Buffers: shared hit=5
+Settings: effective_cache_size = '8GB', work_mem = '128MB', random_page_cost = '1.1', max_parallel_workers_per_gather = '4', jit = 'off'
+Planning:
+  Buffers: shared hit=1
+Planning Time: 0.262 ms
+Execution Time: 9384.886 ms

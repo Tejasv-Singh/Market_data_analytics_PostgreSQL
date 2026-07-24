@@ -1,0 +1,17 @@
+WindowAgg  (cost=0.56..47802.39 rows=494465 width=104) (actual time=27.073..5047.097 rows=584377 loops=1)
+  Buffers: shared hit=2 read=3524
+  I/O Timings: shared read=78.892
+  ->  WindowAgg  (cost=0.56..28023.79 rows=494465 width=52) (actual time=27.052..2561.650 rows=584377 loops=1)
+        Buffers: shared hit=2 read=3524
+        I/O Timings: shared read=78.892
+        ->  Index Only Scan using quotes_sym_ts_cov on quotes  (cost=0.56..14426.00 rows=494465 width=20) (actual time=27.008..306.935 rows=584377 loops=1)
+              Index Cond: ((symbol = 'MSFT'::text) AND (ts >= '2026-03-04 00:00:00'::timestamp without time zone) AND (ts < '2026-03-05 00:00:00'::timestamp without time zone))
+              Heap Fetches: 0
+              Buffers: shared hit=2 read=3524
+              I/O Timings: shared read=78.892
+Settings: effective_cache_size = '8GB', work_mem = '128MB', random_page_cost = '1.1', max_parallel_workers_per_gather = '4', jit = 'off'
+Planning:
+  Buffers: shared hit=28 read=1
+  I/O Timings: shared read=0.048
+Planning Time: 5.241 ms
+Execution Time: 5089.203 ms
